@@ -19,23 +19,47 @@ def create_json(path, obj):
 
 class Bank:
     """This class for Creating Bank and store users details"""
+    counter = 1
 
-    def __init__(self, name, bank_id):
+    def __init__(self, name):
         self.bank_name = name
-        self.bank_id = bank_id
+        self.bank_id = Bank.counter
+        Bank.counter += 1
+
+
+    def check_bank(self):
+        bank_in = f'Banks/{self.bank_name}.json'
+        if os.path.isfile(bank_in):
+            print("****************************")
+            print("Bank is already exist !")
+            print("****************************")
+
+        else:
+            if doesFileExists(f'Users/{self.bank_name}'):
+                pass
+            else:
+                create_folder(f'Users/{self.bank_name}')
 
 
 class User:
     """This class creates new user"""
 
-    def __init__(self, username, pin):
+    def __init__(self, username, pin, bank_name):
         self.username = username
         self.pin = pin
+        self.bank_name = bank_name
         self.init_amount = 0
         self.tr_history = []
 
-    def __repr__(self):
-        return self.username
+    def check_user(self):
+        user_in = f'Users/{self.bank_name}/{self.username}.json'
+
+        if os.path.isfile(user_in):
+            print("****************************")
+            print("User is already exist !")
+            print("****************************")
+            return True
+
 
 
 class Transactions:
@@ -52,7 +76,6 @@ class Transactions:
 
 bank_path = "Banks"
 user_path = "Users"
-bank_id = 1
 
 if __name__ == "__main__":
     while True:
@@ -64,32 +87,17 @@ if __name__ == "__main__":
             u_pin = int(input("Enter PIN : "))
             bank_name = input("Enter Bank name : ")
 
-            user_in = f'Users/{bank_name}/{uname}.json'
-
-            if os.path.isfile(user_in):
-                print("****************************")
-                print("User is already exist !")
-                print("****************************")
-
-            else:
-                u = User(uname, u_pin)
+            u = User(uname, u_pin, bank_name)
+            if not u.check_user():
+                user_in = f'Users/{bank_name}/{uname}.json'
                 create_json(user_in, u)
 
+
         elif choice == 4:
-            bank_name = input("Enter Bank name : ")
-            bank_in = f'Banks/{bank_name}.json'
+            b_name = input("Enter bank name : ")
+            bank_obj = Bank(b_name)
+            bank_obj.check_bank()
+            bank_in = f'Banks/{b_name}.json'
+            create_json(bank_in, bank_obj)
 
-            if os.path.isfile(bank_in):
-                print("****************************")
-                print("Bank is already exist !")
-                print("****************************")
 
-            else:
-                bank = Bank(bank_name, bank_id)
-                if doesFileExists(f'Users/{bank_name}'):
-                    pass
-                else:
-                    create_folder(f'Users/{bank_name}')
-                create_json(bank_in, bank)
-                bank_id += 1
-                
