@@ -33,7 +33,7 @@ class Bank:
             print("****************************")
             print("Bank is already exist !")
             print("****************************")
-
+            return True
         else:
             if doesFileExists(f'Users/{self.bank_name}'):
                 pass
@@ -59,7 +59,6 @@ class User:
             print("User is already exist !")
             print("****************************")
             return True
-
 
 
 class Transactions:
@@ -96,8 +95,8 @@ if __name__ == "__main__":
         elif choice == 4:
             b_name = input("Enter bank name : ")
             bank_obj = Bank(b_name)
-            bank_obj.check_bank()
-            bank_in = f'Banks/{b_name}.json'
-            create_json(bank_in, bank_obj)
+            if not bank_obj.check_bank():
+                bank_in = f'Banks/{b_name}.json'
+                create_json(bank_in, bank_obj)
 
 
