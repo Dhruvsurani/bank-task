@@ -27,6 +27,9 @@ class Bank:
         Bank.counter += 1
 
     def check_bank(self):
+        if not doesFileExists('Banks'):
+            create_folder('Banks')
+
         bank_in = f'Banks/{self.bank_name}.json'
         if os.path.isfile(bank_in):
             print("\n****************************")
@@ -34,10 +37,14 @@ class Bank:
             print("****************************")
             return True
         else:
-            if doesFileExists(f'Users/{self.bank_name}'):
-                pass
-            else:
+            if not doesFileExists('Users'):
+                create_folder('Users')
                 create_folder(f'Users/{self.bank_name}')
+            else:
+                if doesFileExists(f'Users/{self.bank_name}'):
+                    pass
+                else:
+                    create_folder(f'Users/{self.bank_name}')
 
 
 class User:
@@ -103,7 +110,9 @@ if __name__ == "__main__":
                         dp_amount = int(input('\nEnter amount : '))
                         t = Transactions(dp_amount, T_TYPE, before_balance)
                         data['init_amount'] += dp_amount
-                        data['tr_history'].append(t.__dict__)
+                        data['tr_history'].insert(0, t.__dict__)
+                        if len(data['tr_history']) >5:
+                            data['tr_history'].pop()
                         with open(user_in, 'r+') as file:
                             json.dump(data, file)
                         print(data)
@@ -115,7 +124,9 @@ if __name__ == "__main__":
                         wd_amount = int(input('\nEnter amount : '))
                         t = Transactions(wd_amount, T_TYPE, before_balance)
                         data['init_amount'] -= wd_amount
-                        data['tr_history'].append(t.__dict__)
+                        data['tr_history'].insert(0, t.__dict__)
+                        if len(data['tr_history']) > 5:
+                            data['tr_history'].pop()
                         with open(user_in, 'r+') as file:
                             json.dump(data, file)
                         print(data)
